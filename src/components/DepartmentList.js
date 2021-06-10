@@ -1,16 +1,24 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import {
   deleteDepartmentAction,
   updateRefDepartment,
+  getAllDepartmentAction,
+  getByIdDepartmentAction,
 } from "../redux/DepartmentReducer";
+import { DepartmentReportModal } from "./DepartmentReportModal";
+
 
 export function DepartmentList() {
     const state = useSelector((state) => state);
     const dispatch = useDispatch();
     const history = useHistory();
-    console.log(state);
+
+    useEffect(() => {
+      dispatch(getAllDepartmentAction());
+    }, []);
+  
   
     const [successOperation, setSuccessOperation] = useState(false);
   
@@ -28,18 +36,24 @@ export function DepartmentList() {
       // form page
       history.push("/create-department");
     };
+    const getDepartmentById = (item) => {
+      dispatch(getByIdDepartmentAction(item));
+    };
   
     return (
       <div className="row">
         <div className="col-3 col-md-2 d-none d-md-block"></div>
         <div className="col-12 col-md-8">
           <h3 className="alert alert-secondary">Department List</h3>
+          {state.department.error && (
+            <div className="alert alert-danger">Can't connect error</div>
+          )}
   
           {successOperation && (
             <div className="alert alert-success">Operation Success</div>
           )}
 
-<table className="table">
+        <table className="table">
           <thead className="thead-dark">
             <tr>
               <th scope="col">#ID</th>
@@ -50,8 +64,8 @@ export function DepartmentList() {
           <tbody>
             {[...state.department.list].map((item, index) => (
               <tr key={index}>
-                <th scope="row">{index + 1}</th>
-                <td>{item.Name}</td>
+                <th scope="row">{item.id}</th>
+                <td>{item.name}</td>
                 <td>
                   <input
                     type="button"
@@ -74,5 +88,9 @@ export function DepartmentList() {
       </div>
       <div className="col-3 col-md-2 d-none d-md-block"></div>
     </div>
+
+
+
+  
   );
 }

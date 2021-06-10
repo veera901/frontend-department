@@ -1,8 +1,7 @@
 const initState = {
     list: [],
-  
     refdep: {},
-    sampleList: ["Delhi", "Kolkata", "Chennai", "Mumbai"],
+    error: false,
   };
   
   // ACTION TYPES
@@ -11,7 +10,8 @@ const initState = {
   const DEPARTMENT_DELETE = "DEPARTMENT_DELETE";
   const DEPARTMENT_GET_ALL = "DEPARTMENT_GET_ALL";
   const DEPARTMENT_GET_BY_ID = "DEPARTMENT_GET_BY_ID";
-  
+
+  const SERVER_ERROR = "SERVER_ERROR";
   const REF_DEPARTMENT = "REF_DEPARTMENT";
   
   // ACTIONS :: COmponents are interacting with this action
@@ -21,8 +21,8 @@ const initState = {
     // MAKE SURE redux-thunk is installed.
   return async (dispatch) => {
     // WE HV TO CALL THE SPRINT1 / SPRING BOOT
-    const url = "http://localhost:8080/api/department/";
-    const requestBody = { ...payload, };
+    const url = "http://localhost:8080/api/department/add";
+    const requestBody = { ...payload };
 
     // HTTP Client
     await fetch(url, {
@@ -41,8 +41,8 @@ const initState = {
   
     return async (dispatch) => {
       // WE HV TO CALL THE SPRINT1 / SPRING BOOT
-      const url = `http://localhost:8080/api/department/${payload.id}`;
-      const requestBody = { ...payload, };
+      const url = `http://localhost:8080/api/department/update`;
+      const requestBody = { ...payload };
   
       await fetch(url, {
         method: "PUT",
@@ -60,7 +60,7 @@ const initState = {
   
     // redux thunk
   return async (dispatch) => {
-    const url = `http://localhost:8080/api/department/${payload.id}`;
+    const url = `http://localhost:8080/api/department/del/${payload.id}`;
     await fetch(url, { method: "DELETE" });
 
     // update the ui.
@@ -73,17 +73,26 @@ const initState = {
   
    // API CALL/BACKEND CALL / REDUX-THUNK IS THERE
   return async (dispatch) => {
+    try{
     // WE HV TO CALL THE SPRINT1 / SPRING BOOT
-    const url = "http://localhost:8080/api/department/";
+    const url = "http://localhost:8080/api/department/getall";
 
     // HTTP Client / POSTMAN / SWAGGER
     const response = await fetch(url);
     const departmentList = await response.json();
-    console.log(departmentList);
+    //console.log(departmentList);
 
     // Update the UI
     dispatch({ type: DEPARTMENT_GET_ALL, payload: departmentList });
-  };
+  }  catch (error) {
+    console.log(error);
+    dispatch({ type: SERVER_ERROR, payload: true });
+
+    const localDepartmentStringList = localStorage.getItem("departmentList");
+    const localDepartmentList = JSON.parse(localDepartmentStringList);
+    dispatch({ type: DEPARTMENT_GET_ALL, payload: localDepartmentList });
+  }
+ };
 }
   
   export function getByIdDepartmentAction(payload) {
@@ -115,7 +124,7 @@ const initState = {
         // TODO
         const oldList = state.list;
         oldList.splice(action.payload, 1);
-        console.log("OL", oldList);
+        //console.log("OL", oldList);
   
         return { ...state, list: [...oldList] };
       case DEPARTMENT_GET_ALL:
@@ -127,6 +136,9 @@ const initState = {
   
       case REF_DEPARTMENT:
         return { ...state, refemp: action.payload };
+
+      case SERVER_ERROR:
+        return { ...state, error: action.payload };
   
       default:
         return state;

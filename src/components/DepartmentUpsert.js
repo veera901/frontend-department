@@ -1,13 +1,14 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { createDepartmentAction } from "../redux/DepartmentReducer";
+import { createDepartmentAction,updateDepartmentAction,} from "../redux/DepartmentReducer";
 
 export function DepartmentUpsert() {
   const dispatch = useDispatch();
   const history = useHistory();
+  const formEL = useRef();
   const state = useSelector((state) => state);
-  console.log(state);
+
 
   const [name, setName] = useState(state.department.refdep.name);
 
@@ -19,9 +20,7 @@ export function DepartmentUpsert() {
 
   const addDepartment = (d) => {
     d.preventDefault();
-    console.log(name);
-
-    // THIS IS REDUX ACTION CALLING
+    {
     dispatch(
         createDepartmentAction({
           name,
@@ -32,8 +31,22 @@ export function DepartmentUpsert() {
     setSuccessOperation(true);
     setTimeout(() => setSuccessOperation(false), 5000);
 
-     // A2: navigate to another page
-    // history.push("/list-department");
+    // reset the form
+    setName("");
+      }
+  };
+
+  const updateDepartment = () => {
+    dispatch(
+      updateDepartmentAction({
+        id: state.department.refdep.id,
+        name,
+      })
+    );
+
+    // A1 sucess
+    setSuccessOperation(true);
+    setTimeout(() => setSuccessOperation(false), 5000);
 
     // reset the form
     setName("");
@@ -43,7 +56,7 @@ export function DepartmentUpsert() {
     <div className="row">
       <div className="col-3 col-md-3 d-none d-md-block"></div>
       <div className="col-12 col-md-6">
-        <h3 className="alert alert-secondary">
+        <h3 className="alert alert-info">
           {state.department.refdep.name
             ? "Update Department"
             : "Create Department"}
@@ -58,9 +71,10 @@ export function DepartmentUpsert() {
           <input
             type="text"
             value={name}
+            required="required"
             onChange={(d) => updateName(d)}
             className="form-control"
-            placeholder="Enter name"
+            placeholder="Enter Name"
           />
         </div>
 
@@ -70,7 +84,7 @@ export function DepartmentUpsert() {
               type="button"
               className="btn btn-secondary w-100"
               value="Update Department"
-              onClick={() => {}}
+              onClick={() => updateDepartment()}
             />
           ) : (
             <input

@@ -13,7 +13,7 @@ export function DepartmentModal() {
   return (
     <Modal show={state.department.refdep.id} onHide={() => updateRefObj()}>
       <Modal.Header closeButton>
-        <Modal.Title>Hello, {state.department.refdep.userName}</Modal.Title>
+        <Modal.Title>Hello, {state.department.refdep.name}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <ListGroup>
