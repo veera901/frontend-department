@@ -1,24 +1,39 @@
-import logo from './logo.svg';
-import './App.css';
+import logo from "./logo.svg";
+import "./App.css";
+import { DepartmentUpsert } from "./components/DepartmentUpsert";
+import { DepartmentList } from "./components/DepartmentList";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { AppNavBar } from "./common/AppNavBar";
+import { DepartmentReportReducer } from "./redux/DepartmentReportReducer";
+import { DepartmentReportUpsert } from "./components/DepartmentReportUpsert";
+import { DepartmentReportList } from "./components/DepartmentReportList";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <AppNavBar />
+
+      <Switch>
+        <Route path="/add-department">
+          <DepartmentUpsert />
+        </Route>
+
+        <Route path="/list-department">
+          <DepartmentList />
+        </Route>
+
+        <Route path="/add-departmentReport">
+          <DepartmentReportUpsert />
+        </Route>
+        <Route path="/list-departmentReport">
+          <DepartmentReportList />
+        </Route>
+
+        <Route exact path="/">
+          <DepartmentList />
+        </Route>
+      </Switch>
+    </Router>
   );
 }
 
