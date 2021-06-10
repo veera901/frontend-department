@@ -7,7 +7,7 @@ export function DepartmentReportUpsert() {
   const dispatch = useDispatch();
   const history = useHistory();
   const state = useSelector((state) => state);
-  console.log(state);
+  //console.log(state);
 
   const [name, setName] = useState(state.department.refdep.name);
   const [description, setDescription] = useState(state.department.refdep.description);
@@ -47,7 +47,7 @@ export function DepartmentReportUpsert() {
       <div className="col-3 col-md-3 d-none d-md-block"></div>
       <div className="col-12 col-md-6">
         <h3 className="alert alert-secondary">
-          {state.department.refdep.name
+          {state.department.refdep.name 
             ? "Update DepartmentReport"
             : "Create DepartmentReport"}
         </h3>
